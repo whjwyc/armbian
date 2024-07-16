@@ -1,34 +1,16 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: John Doe <john.doe@somewhere.on.planet>
-Date: Tue, 16 Jul 2024 08:22:18 +0000
-Subject: Patching u-boot rk35xx files arch/arm/dts/Makefile
- arch/arm/dts/rk3566-ha-green-u-boot.dtsi arch/arm/dts/rk3566-ha-green.dts
- configs/ha-green-rk3566_defconfig
+Date: Tue, 16 Jul 2024 08:57:59 +0000
+Subject: Patching u-boot rk35xx files arch/arm/dts/rk3566-ha-green-u-boot.dtsi
+ arch/arm/dts/rk3566-ha-green.dts configs/ha-green-rk3566_defconfig
 
 Signed-off-by: John Doe <john.doe@somewhere.on.planet>
 ---
- arch/arm/dts/Makefile                    |   1 +
  arch/arm/dts/rk3566-ha-green-u-boot.dtsi |   1 +
  arch/arm/dts/rk3566-ha-green.dts         | 359 ++++++++++
  configs/ha-green-rk3566_defconfig        | 105 +++
- 4 files changed, 466 insertions(+)
+ 3 files changed, 465 insertions(+)
 
-diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index 87d51967fe..f958fc62f0 100644
---- a/arch/arm/dts/Makefile
-+++ b/arch/arm/dts/Makefile
-@@ -180,10 +180,11 @@ dtb-$(CONFIG_ROCKCHIP_RK3568) += \
- 	rk3566-quartz64-b.dtb \
- 	rk3566-radxa-cm3-io.dtb \
- 	rk3566-soquartz-blade.dtb \
- 	rk3566-soquartz-cm4.dtb \
- 	rk3566-soquartz-model-a.dtb \
-+	rk3566-ha-green.dtb \
- 	rk3568-bpi-r2-pro.dtb \
- 	rk3568-evb.dtb \
- 	rk3568-generic.dtb \
- 	rk3568-lubancat-2.dtb \
- 	rk3568-nanopi-r5c.dtb \
 diff --git a/arch/arm/dts/rk3566-ha-green-u-boot.dtsi b/arch/arm/dts/rk3566-ha-green-u-boot.dtsi
 new file mode 100644
 index 0000000000..3f4fd31a46
