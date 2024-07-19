@@ -1,63 +1,36 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: John Doe <john.doe@somewhere.on.planet>
-Date: Mon, 1 Jul 2024 09:42:43 +0800
+Date: Fri, 19 Jul 2024 07:13:46 +0000
 Subject: Patching u-boot rk35xx files arch/arm/dts/rk3588s-nanopi-r6c.dts
- configs/nanopi-r6c-rk3588s_defconfig
+ configs/nanopi-r6c-rk3588s_defconfigy
 
 Signed-off-by: John Doe <john.doe@somewhere.on.planet>
 ---
- arch/arm/dts/rk3588s-nanopi-r6c.dts  |  36 ++
- configs/nanopi-r6c-rk3588s_defconfig | 257 ++++++++++
- 2 files changed, 293 insertions(+)
+ arch/arm/dts/rk3588s-nanopi-r6c.dts  |   9 +
+ configs/nanopi-r6c-rk3588s_defconfig | 256 ++++++++++
+ 2 files changed, 265 insertions(+)
 
 diff --git a/arch/arm/dts/rk3588s-nanopi-r6c.dts b/arch/arm/dts/rk3588s-nanopi-r6c.dts
 new file mode 100644
-index 0000000000..5e6d2c9a3a
+index 0000000000..d6e558257a
 --- /dev/null
 +++ b/arch/arm/dts/rk3588s-nanopi-r6c.dts
-@@ -0,0 +1,36 @@
+@@ -0,0 +1,9 @@
 +/dts-v1/;
 +#include "rk3588.dtsi"
 +#include "rk3588-u-boot.dtsi"
++#include <dt-bindings/input/input.h>
 +
 +/ {
 +	model = "RK3588S NanoPi R6C";
 +	compatible = "rockchip,rk3588s-nanopi-r6c", "rockchip,rk3588";
-+
-+	chosen: chosen {
-+		stdout-path = &uart2;
-+		u-boot,spl-boot-order = &sdmmc, &sdhci;
-+	};
-+
-+	aliases: aliases {
-+		mmc0 = &sdhci;
-+		mmc1 = &sdmmc;
-+	};
-+
-+	vcc5v0_sys: vcc5v0-sys {
-+		u-boot,dm-pre-reloc;
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc5v0_sys";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+};
-+
-+&crypto {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
 +};
 diff --git a/configs/nanopi-r6c-rk3588s_defconfig b/configs/nanopi-r6c-rk3588s_defconfig
 new file mode 100644
-index 0000000000..d9b7a91aed
+index 0000000000..040b561ebd
 --- /dev/null
 +++ b/configs/nanopi-r6c-rk3588s_defconfig
-@@ -0,0 +1,257 @@
+@@ -0,0 +1,256 @@
 +CONFIG_ARM=y
 +CONFIG_ARCH_ROCKCHIP=y
 +CONFIG_SPL_GPIO_SUPPORT=y
@@ -313,9 +286,7 @@ index 0000000000..d9b7a91aed
 +CONFIG_SCSI_AHCI=y
 +CONFIG_SCSI=y
 +CONFIG_USING_KERNEL_DTB_V2=y
-+CONFIG_MTD_BLK_U_BOOT_OFFS=0x400
 +CONFIG_ROCKCHIP_EMMC_IOMUX=y
-\ No newline at end of file
 -- 
 Created with Armbian build tools https://github.com/armbian/build
 
