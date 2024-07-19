@@ -1,10 +1,10 @@
 config:
 
   # Just some info stuff; not used by the patching scripts
-  name: rk35xx-5.10
+  name: rk35xx-nanopi-5.10.160
   kind: kernel
-  type: vendor # or: vendor
-  branch: rk-5.10-rkr6
+  type: nanopi # or: vendor
+  branch: 5.10.160
   last-known-good-tag: v5.10.160
 
   # .dts files in these directories will be copied as-is to the build tree; later ones overwrite earlier ones.

@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: John Doe <john.doe@somewhere.on.planet>
+Date: Wed, 17 Jul 2024 14:26:27 +0000
+Subject: Patching u-boot rk35xx files arch/arm/dts/rk3588s-nanopi-r6c.dts
+
+Signed-off-by: John Doe <john.doe@somewhere.on.planet>
+---
+ arch/arm/dts/rk3588s-nanopi-r6c.dts | 11 ++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm/dts/rk3588s-nanopi-r6c.dts b/arch/arm/dts/rk3588s-nanopi-r6c.dts
+index 25d8e825a9..f30e02b356 100644
+--- a/arch/arm/dts/rk3588s-nanopi-r6c.dts
++++ b/arch/arm/dts/rk3588s-nanopi-r6c.dts
+@@ -25,19 +25,30 @@
+ 		regulator-always-on;
+ 		regulator-boot-on;
+ 	};
+ 
+ 	vcc_3v3_sd_s0: vcc-3v3-sd-s0 {
++        u-boot,dm-pre-reloc;
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc_3v3_sd_s0";
+ 		gpio = <&gpio4 RK_PB4 GPIO_ACTIVE_HIGH>;
+ 		regulator-max-microvolt = <3000000>;
+ 		regulator-min-microvolt = <3000000>;
+ 		regulator-always-on;
+ 		enable-active-high;
+ 		regulator-boot-on;
+ 	};
++
++	vcc_3v3_pcie20: vcc3v3-pcie20 {
++        u-boot,dm-pre-reloc;
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_3v3_pcie20";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
+ };
+ 
+ &i2c0 {
+     u-boot,dm-pre-reloc;
+ 	status = "okay";
+-- 
+Created with Armbian build tools https://github.com/armbian/build
+
