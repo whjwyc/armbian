@@ -1,21 +1,21 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: John Doe <john.doe@somewhere.on.planet>
-Date: Fri, 19 Jul 2024 07:13:46 +0000
+Date: Fri, 19 Jul 2024 12:34:33 +0000
 Subject: Patching u-boot rk35xx files arch/arm/dts/rk3588s-nanopi-r6c.dts
- configs/nanopi-r6c-rk3588s_defconfigy
+ configs/nanopi-r6c-rk3588s_defconfig
 
 Signed-off-by: John Doe <john.doe@somewhere.on.planet>
 ---
- arch/arm/dts/rk3588s-nanopi-r6c.dts  |   9 +
+ arch/arm/dts/rk3588s-nanopi-r6c.dts  |  19 +
  configs/nanopi-r6c-rk3588s_defconfig | 256 ++++++++++
- 2 files changed, 265 insertions(+)
+ 2 files changed, 275 insertions(+)
 
 diff --git a/arch/arm/dts/rk3588s-nanopi-r6c.dts b/arch/arm/dts/rk3588s-nanopi-r6c.dts
 new file mode 100644
-index 0000000000..d6e558257a
+index 0000000000..230ced7ad9
 --- /dev/null
 +++ b/arch/arm/dts/rk3588s-nanopi-r6c.dts
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,19 @@
 +/dts-v1/;
 +#include "rk3588.dtsi"
 +#include "rk3588-u-boot.dtsi"
@@ -24,6 +24,16 @@ index 0000000000..d6e558257a
 +/ {
 +	model = "RK3588S NanoPi R6C";
 +	compatible = "rockchip,rk3588s-nanopi-r6c", "rockchip,rk3588";
++
++	aliases: aliases {
++		mmc0 = &sdhci;
++		mmc1 = &sdmmc;
++	};
++
++	chosen: chosen {
++		stdout-path = &uart2;
++		u-boot,spl-boot-order = &sdmmc, &sdhci;
++	};
 +};
 diff --git a/configs/nanopi-r6c-rk3588s_defconfig b/configs/nanopi-r6c-rk3588s_defconfig
 new file mode 100644
