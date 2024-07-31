@@ -12,6 +12,7 @@ BOOT_SUPPORT_SPI="yes"
 BOOT_SPI_RKSPI_LOADER="yes"
 BOOTFS_TYPE="fat"
 WIREGUARD="no"
+ENABLE_EXTENSIONS="mesa-vpu"
 
 DDR_BLOB="rk35/rk3566_ddr_1056MHz_v1.18.bin"
 BL31_BLOB="rk35/rk3568_bl31_v1.43.elf"
@@ -19,7 +20,7 @@ ROCKUSB_BLOB="rk35/rk356x_spl_loader_v1.21.113.bin"
 
 function post_family_config__ha-green_use_mainline_uboot() {
 	BOOTSOURCE="https://github.com/Kwiboo/u-boot-rockchip.git"
-	BOOTBRANCH="branch:rk3xxx-2024.07"
+	BOOTBRANCH="branch:rk3xxx-2024.10"
         BOOTDIR="u-boot-${BOARD}"
         BOOTPATCHDIR="u-boot-${BOARD}"
         BOOTDELAY=3
