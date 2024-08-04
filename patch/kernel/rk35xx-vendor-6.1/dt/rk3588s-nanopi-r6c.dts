@@ -22,14 +22,8 @@
 		ethernet1 = &gmac1;
 	};
 
-	fiq_debugger: fiq-debugger {
-		compatible = "rockchip,fiq-debugger";
-		rockchip,serial-id = <2>;
-		rockchip,wake-irq = <0>;
-		rockchip,irq-mode-enable = <1>;
-		rockchip,baudrate = <1500000>;
-		interrupts = <GIC_SPI 423 IRQ_TYPE_LEVEL_LOW>;
-		status = "okay";
+	chosen: chosen {
+		bootargs = "earlycon=uart8250,mmio32,0xfeb50000 console=ttyFIQ0 coherent_pool=1m irqchip.gicv3_pseudo_nmi=0";
 	};
 
 	vcc5v0_sys: vcc5v0-sys {
@@ -637,3 +631,4 @@
 	extcon = <&u2phy0>;
 	status = "okay";
 };
+
