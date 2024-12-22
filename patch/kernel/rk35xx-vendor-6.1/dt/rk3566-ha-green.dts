@@ -664,3 +664,4 @@
 &usb_host1_ohci {
 	status = "okay";
 };
+
