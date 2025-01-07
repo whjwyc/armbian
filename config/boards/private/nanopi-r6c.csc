@@ -21,7 +21,7 @@ BL31_BLOB="rk35/rk3588_bl31_v1.45.elf"
 
 function post_family_config__nanopi_r6c_use_mainline_uboot() {
 	BOOTSOURCE="https://github.com/u-boot/u-boot.git"
-	BOOTBRANCH="tag:v2024.07"
+	BOOTBRANCH="tag:v2024.10"
         BOOTDIR="u-boot-${BOARD}"
         BOOTPATCHDIR="u-boot-${BOARD}"
         BOOTDELAY=3
