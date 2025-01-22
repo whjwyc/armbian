@@ -61,6 +61,9 @@ function do_main_configuration() {
 
 	declare -g SKIP_EXTERNAL_TOOLCHAINS="${SKIP_EXTERNAL_TOOLCHAINS:-yes}" # don't use any external toolchains, by default.
 
+	# Armbian config is central tool used in all builds. As its build externally, we have moved it to extension. Enable it here.
+	enable_extension "armbian-config"
+
 	# Network stack to use, default to network-manager; configuration can override this.
 	# Will be made read-only further down.
 	declare -g NETWORKING_STACK="${NETWORKING_STACK}"
@@ -239,7 +242,7 @@ function do_main_configuration() {
 			declare -g -r GITHUB_SOURCE='https://hub.fastgit.xyz'
 			;;
 		ghproxy)
-			[[ -z $GHPROXY_ADDRESS ]] && GHPROXY_ADDRESS=ghgo.xyz
+			[[ -z $GHPROXY_ADDRESS ]] && GHPROXY_ADDRESS=ghfast.top
 			declare -g -r GITHUB_SOURCE="https://${GHPROXY_ADDRESS}/https://github.com"
 			;;
 		gitclone)
@@ -252,7 +255,7 @@ function do_main_configuration() {
 
 	case $GHCR_MIRROR in
 		dockerproxy)
-			GHCR_MIRROR_ADDRESS="${GHCR_MIRROR_ADDRESS:-"ghcr.dockerproxy.com"}"
+			GHCR_MIRROR_ADDRESS="${GHCR_MIRROR_ADDRESS:-"ghcr.dockerproxy.net"}"
 			declare -g -r GHCR_SOURCE=$GHCR_MIRROR_ADDRESS
 			;;
 		nju)
