@@ -23,7 +23,7 @@ ROCKUSB_BLOB="rk35/rk356x_spl_loader_v1.21.113.bin"
 
 function post_family_config__ha-green_use_mainline_uboot() {
         BOOTSOURCE="https://github.com/u-boot/u-boot.git"
-        BOOTBRANCH="tag:v2025.01"
+        BOOTBRANCH="tag:v2025.04"
         BOOTDIR="u-boot-${BOARD}"
         BOOTPATCHDIR="u-boot-${BOARD}"
         BOOTDELAY=3

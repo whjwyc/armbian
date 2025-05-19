@@ -67,7 +67,6 @@ p7zip-full
 pamix
 pasystray
 pavucontrol
-#pavumeter
 polkitd
 pkexec
 #printer-driver-all
@@ -77,7 +76,6 @@ pulseaudio-module-bluetooth
 redshift
 slick-greeter
 smbclient
-software-properties-gtk
 synaptic
 system-config-printer
 system-config-printer-common

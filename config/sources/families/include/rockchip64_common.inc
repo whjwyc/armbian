@@ -33,7 +33,7 @@ case $BRANCH in
 		;;
 
 	edge)
-		declare -g KERNEL_MAJOR_MINOR="6.13"
+		declare -g KERNEL_MAJOR_MINOR="6.14"
 		declare -g LINUXFAMILY=rockchip64
 		declare -g LINUXCONFIG='linux-rockchip64-'$BRANCH
 		;;
@@ -74,6 +74,10 @@ CPUMIN=${CPUMIN:="408000"}
 # BOOT_SOC_MKIMAGE defaults to BOOT_SOC, but can be overriden. See rk3566
 declare -g BOOT_SOC_MKIMAGE="${BOOT_SOC}"
 
+# LOADER_UBOOT_OFFSET defaults to 0x200000, but can be overriden. See rk3308
+# It only take effects while $BOOT_SCENARIO == 'only-blobs'
+declare -g LOADER_UBOOT_OFFSET="0x200000"
+
 case "$BOOT_SOC" in
 	rk3308)
 		CPUMAX=${CPUMAX:="1296000"}
@@ -81,6 +85,7 @@ case "$BOOT_SOC" in
 		DDR_BLOB="${DDR_BLOB:-"rk33/rk3308_ddr_589MHz_uart2_m1_v1.30.bin"}"
 		MINILOADER_BLOB="${MINILOADER_BLOB:-"rk33/rk3308_miniloader_v1.22.bin"}"
 		BL31_BLOB="${BL31_BLOB:-"rk33/rk3308_bl31_v2.22.elf"}"
+		LOADER_UBOOT_OFFSET="0x600000" # rk3308 loader has a quirky uboot offset 0x600000
 		;;
 
 	rk3328)
@@ -139,13 +144,12 @@ case "$BOOT_SOC" in
 		BOOT_SCENARIO="${BOOT_SCENARIO:=spl-blobs}"
 		DDR_BLOB="${DDR_BLOB:-"rk35/rk3576_ddr_lp4_2112MHz_lp5_2736MHz_v1.03.bin"}"
 		BL31_BLOB="${BL31_BLOB:-"rk35/rk3576_bl31_v1.04.elf"}"
-		BL32_BLOB="${BL32_BLOB:-"rk35/rk3576_bl32_v1.01.bin"}"
 		;;
 
 	rk3588) #CPUMAX undefined?
 		BOOT_SCENARIO="${BOOT_SCENARIO:=spl-blobs}"
-		DDR_BLOB="${DDR_BLOB:-"rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.16.bin"}"
-		BL31_BLOB="${BL31_BLOB:-"rk35/rk3588_bl31_v1.45.elf"}"
+		DDR_BLOB="${DDR_BLOB:-"rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz_v1.18.bin"}"
+		BL31_BLOB="${BL31_BLOB:-"rk35/rk3588_bl31_v1.48.elf"}"
 		# ROCKUSB_BLOB is used to flash a board with rkdeveloptool (Linux, can use 'rkdevflash' extension) or RKDevTool (Windows) in MASKROM mode
 		ROCKUSB_BLOB="rk35/rk3588_spl_loader_v1.16.113.bin"
 		BOOTENV_FILE='rk35xx.txt'
@@ -238,7 +242,7 @@ uboot_custom_postprocess() {
 			tempfile=$(mktemp)
 			run_host_command_logged tools/mkimage -n "${BOOT_SOC_MKIMAGE}" -T rksd -d $RKBIN_DIR/$DDR_BLOB idbloader.bin
 			cat $RKBIN_DIR/$MINILOADER_BLOB >> idbloader.bin
-			run_host_x86_binary_logged $RKBIN_DIR/tools/loaderimage --pack --uboot ./u-boot-dtb.bin uboot.img 0x200000
+			run_host_x86_binary_logged $RKBIN_DIR/tools/loaderimage --pack --uboot ./u-boot-dtb.bin uboot.img ${LOADER_UBOOT_OFFSET}
 			run_host_x86_binary_logged $RKBIN_DIR/tools/trust_merger --replace bl31.elf $RKBIN_DIR/$BL31_BLOB trust.ini
 			;;
 
@@ -295,10 +299,42 @@ write_uboot_platform() {
 
 # @TODO: this is not ready for BOOT_SCENARIO=binman yet
 write_uboot_platform_mtd() {
-	if [[ -f $1/rkspi_loader.img ]]; then
-		dd if=$1/rkspi_loader.img of=$2 conv=notrunc status=none > /dev/null 2>&1
+	FILES=$(find "$1" -maxdepth 1 -type f -name "rkspi_loader*.img")
+	if [ -z "$FILES" ]; then
+		echo "No SPI image found."
+		exit 1
+	fi
+
+	MENU_ITEMS=()
+	i=1
+
+	# Read the files into an array
+	while IFS= read -r file; do
+		filename=$(basename "$file")
+		MENU_ITEMS+=("$i" "$filename" "")
+		((i++))
+	done <<< "$FILES"
+
+	# If there is only one image, we can skip the dialog
+	if [[ $i -eq 2 ]]; then
+		dd if=$1/${MENU_ITEMS[1]} of=$2 conv=notrunc status=none > /dev/null 2>&1
+		return
+	fi
+
+	[[ -f /etc/armbian-release ]] && source /etc/armbian-release
+	backtitle="Armbian for $BOARD_NAME install script, https://www.armbian.com"
+
+	CHOICE=$(dialog --no-collapse \
+  		--title "armbian-install" \
+  		--backtitle $backtitle \
+  		--radiolist "Choose SPI image:" 0 56 4 \
+  		"${MENU_ITEMS[@]}" \
+  		3>&1 1>&2 2>&3)
+
+	if [ $? -eq 0 ]; then
+		dd if=$1/${MENU_ITEMS[($CHOICE*3)-2]} of=$2 conv=notrunc status=none > /dev/null 2>&1
 	else
-		echo "SPI u-boot image not found!"
+		echo "No SPI image chosen."
 		exit 1
 	fi
 }
