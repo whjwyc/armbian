@@ -48,7 +48,7 @@
 		regulator-boot-on;
 		vin-supply = <&dc_12v>;
 	};
-	
+
 	vcc3v3_sys: vcc3v3-sys {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_sys";
@@ -57,6 +57,38 @@
 		regulator-always-on;
 		regulator-boot-on;
 		vin-supply = <&vcc5v0_sys>;
+	};
+
+	vcc5v0_usb: vcc5v0-usb {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc5v0_usb";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		regulator-always-on;
+		regulator-boot-on;
+		vin-supply = <&vcc3v3_sys>;
+	};
+
+	vcc5v0_otg: vcc5v0-otg {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc5v0_otg";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		vin-supply = <&vcc5v0_usb>;
+	};
+
+	vcc5v0_host: vcc5v0-host {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc5v0_host";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
+		regulator-always-on;
+		regulator-boot-on;
+		enable-active-high;
+		vin-supply = <&vcc5v0_usb>;
 	};
 
 	sdio_pwrseq: sdio-pwrseq {
@@ -69,9 +101,11 @@
 
 	wireless_wlan: wireless-wlan {
 		compatible = "wlan-platdata";
-		WIFI,host_wake_irq = <&gpio2 RK_PB2 GPIO_ACTIVE_HIGH>;
 		rockchip,grf = <&grf>;
+		clocks = <&rk809 1>;
+		clock-names = "ext_clock";
 		wifi_chip_type = "ap6236";
+		WIFI,host_wake_irq = <&gpio2 RK_PB2 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
@@ -133,7 +167,7 @@
 	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
 	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru CLK_MAC1_2TOP>;
 	assigned-clock-rates = <0>, <125000000>;
-	clock_in_out = "input";
+	clock_in_out = "output";
 
 	snps,reset-gpio = <&gpio3 RK_PA1 GPIO_ACTIVE_LOW>;
 	snps,reset-active-low;
@@ -461,6 +495,23 @@
 	};
 };
 
+&i2c1 {
+	status = "okay";
+};
+
+&i2c2 {
+	pinctrl-0 = <&i2c2m1_xfer>;
+	status = "okay";
+
+	sht21@40 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "sensirion,sht21";
+		reg = <0x40>;
+		status = "okay";
+	};		
+};
+
 &pmu_io_domains {
 	pmuio1-supply = <&vcc3v3_pmu>;
 	pmuio2-supply = <&vcc3v3_pmu>;
@@ -529,16 +580,39 @@
 		compatible = "brcm,bcm43438-bt";
 		clocks = <&rk809 1>;
 		clock-names = "ext_clock";
-		device-wakeup-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_HIGH>;
-		host-wakeup-gpios = <&gpio2 RK_PB2 GPIO_ACTIVE_HIGH>;
+		uart_rts_gpios = <&gpio2 RK_PB5 GPIO_ACTIVE_LOW>;
 		shutdown-gpios = <&gpio2 RK_PB7 GPIO_ACTIVE_HIGH>;
-		vbat-supply = <&vcc3v3_sys>;
-		vddio-supply = <&vcca1v8_pmu>;
+		host-wakeup-gpios = <&gpio2 RK_PC0 GPIO_ACTIVE_HIGH>;
+		device-wakeup-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_HIGH>;
 	};
+
 };
 
 &uart2 {
 	status = "disabled";
+};
+
+&uart7 {
+	pinctrl-0 = <&uart7m2_xfer>;
+	dma-names = "tx", "rx";
+	status = "okay";
+};
+
+&spi3 {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	pinctrl-names = "default", "high_speed";
+	pinctrl-0 = <&spi3m0_cs0 &spi3m0_cs1 &spi3m0_pins>;
+	pinctrl-1 = <&spi3m0_cs0 &spi3m0_cs1 &spi3m0_pins_hs>;
+	max-freq = <50000000>;
+
+	spidev@0 {
+		status = "okay";
+		compatible = "rockchip,spidev";
+		reg = <0>;
+		spi-max-frequency = <5000000>;
+	};
 };
 
 &iep {
@@ -624,7 +698,7 @@
 };
 
 &usbdrd30 {
-    status = "okay";
+	status = "okay";
 };
 
 &usbdrd_dwc3 {
@@ -632,3 +706,4 @@
 	extcon = <&usb2phy0>;
 	status = "okay";
 };
+
