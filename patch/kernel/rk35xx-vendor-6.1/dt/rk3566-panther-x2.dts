@@ -707,3 +707,13 @@
 	status = "okay";
 };
 
+&pinctrl {
+	i2c2{
+		i2c2m1_xfer: i2c2m1-xfer {
+			rockchip,pins =
+				<4 RK_PB5 1 &pcfg_pull_none_smt>,
+				<4 RK_PB4 1 &pcfg_pull_none_smt>;
+		};
+	};
+};
+
