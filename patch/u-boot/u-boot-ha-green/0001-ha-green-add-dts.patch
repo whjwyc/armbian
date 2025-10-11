@@ -372,7 +372,7 @@ index 0000000000..1e0904a7c4
 +		bootph-some-ram;
 +		compatible = "jedec,spi-nor";
 +		reg = <0>;
-+		spi-max-frequency = <24000000>;
++		spi-max-frequency = <25000000>;
 +		spi-rx-bus-width = <1>;
 +		spi-tx-bus-width = <1>;
 +	};

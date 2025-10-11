@@ -63,6 +63,8 @@
 		regulator-max-microvolt = <5000000>;
 		enable-active-high;
 		vin-supply = <&vcc5v0_usb>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_host_20_en>;
 	};
 
 	vcc_3v3_sd_s0: vcc-3v3-sd-s0{
@@ -112,6 +114,8 @@
 
 	gpio_keys: gpio-keys {
 		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&button_restart_pin>;
 
 		button_restart: button-restart {
 			label = "restart";
@@ -123,26 +127,34 @@
 
 	gpio_leds: gpio-leds {
 		compatible = "gpio-leds";
-		
-		led_sys: led-sys {
+
+		sys_led: sys-led {
 			gpios = <&gpio1 RK_PC1 GPIO_ACTIVE_HIGH>;
+			label = "sys_led";
 			linux,default-trigger = "heartbeat";
-			label = "red:sys";
+			pinctrl-names = "default";
+			pinctrl-0 = <&sys_led_pin>;
 		};
 
-		led_wan: led-wan {
+		wan_led: wan-led {
 			gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_HIGH>;
-			label = "green:wan";
+			label = "wan_led";
+			pinctrl-names = "default";
+			pinctrl-0 = <&wan_led_pin>;
 		};
 
-		led_lan: led-lan {
+		lan_led: lan-led {
 			gpios = <&gpio1 RK_PC3 GPIO_ACTIVE_HIGH>;
-			label = "green:lan";
+			label = "lan_led";
+			pinctrl-names = "default";
+			pinctrl-0 = <&lan_led_pin>;
 		};
 
 		user_led: user-led {
 			gpios = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
-			label = "green:user";
+			label = "user_led";
+			pinctrl-names = "default";
+			pinctrl-0 = <&user_led_pin>;
 		};
 	};
 
@@ -310,6 +322,8 @@
 		#clock-cells = <0>;
 		clock-frequency = <32768>;
 		clock-output-names = "hym8563";
+		pinctrl-names = "default";
+		pinctrl-0 = <&rtc_int>;
 
 		interrupt-parent = <&gpio0>;
 		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
@@ -378,8 +392,17 @@
 &pcie2x1l2 {
 	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&vcc_3v3_pcie20>;
+	rockchip,skip-hw-retry;
+	rockchip,wait-for-link-ms = <1000>;
 	status = "okay";
+
+	pcie@0,0 {
+		reg = <0x00400000 0 0 0 0>;
+		#address-cells = <3>;
+		#size-cells = <2>;
+	};
 };
+
 
 &saradc {
 	vref-supply = <&avcc_1v8_s0>;
@@ -401,6 +424,17 @@
 &uart2 {
 	status = "disabled";
 };
+
+&pwm0 {
+	pinctrl-0 = <&pwm0m2_pins>;
+	status = "okay";
+};
+
+&pwm1 {
+	pinctrl-0 = <&pwm1m2_pins>;
+	status = "okay";
+};
+
 
 &iep {
 	status = "okay";
@@ -577,8 +611,10 @@
 &vop {
 	assigned-clocks = <&cru ACLK_VOP>;
 	assigned-clock-rates = <800000000>;
-	status = "okay";
+	vop-supply = <&vdd_log_s0>;
+	support-multi-area;
 	disable-win-move;
+	status = "okay";
 };
 
 &vop_mmu {
@@ -586,27 +622,28 @@
 };
 
 &vp0 {
-	cursor-win-id=<ROCKCHIP_VOP2_ESMART0>;
-	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER0 | 1 << ROCKCHIP_VOP2_ESMART0)>;
+	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER0 | 1 << ROCKCHIP_VOP2_ESMART0 |
+				1 << ROCKCHIP_VOP2_CLUSTER1)>;
 	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER0>;
+	cursor-win-id = <ROCKCHIP_VOP2_ESMART0>;
 };
 
 &vp1 {
-	cursor-win-id=<ROCKCHIP_VOP2_ESMART1>;
-	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER1 | 1 << ROCKCHIP_VOP2_ESMART1)>;
-	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER1>;
+	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER2 | 1 << ROCKCHIP_VOP2_ESMART1 |
+				1 << ROCKCHIP_VOP2_ESMART2)>;
+	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER2>;
+	cursor-win-id = <ROCKCHIP_VOP2_ESMART1>;
 };
 
 &vp2 {
-	cursor-win-id=<ROCKCHIP_VOP2_ESMART2>;
-	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER2 | 1 << ROCKCHIP_VOP2_ESMART2)>;
-	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER2>;
+	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER3 | 1 << ROCKCHIP_VOP2_ESMART3)>;
+	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER3>;
+	cursor-win-id = <ROCKCHIP_VOP2_ESMART3>;
+	status = "disabled";
 };
 
 &vp3 {
-	cursor-win-id=<ROCKCHIP_VOP2_ESMART3>;
-	rockchip,plane-mask = <(1 << ROCKCHIP_VOP2_CLUSTER3 | 1 << ROCKCHIP_VOP2_ESMART3)>;
-	rockchip,primary-plane = <ROCKCHIP_VOP2_CLUSTER3>;
+	status = "disabled";
 };
 
 &wdt {
@@ -614,8 +651,8 @@
 };
 
 &display_subsystem {
-	clocks = <&hdptxphy_hdmi0>;
-	clock-names = "hdmi0_phy_pll";
+	clocks = <&hdptxphy_hdmi0>, <&hdptxphy_hdmi0>;
+	clock-names = "hdmi0_phy_pll", "hdmi1_phy_pll";
 };
 
 &u2phy0 {
@@ -662,4 +699,44 @@
 	status = "okay";
 };
 
+&pinctrl {
+	hym8563 {
+		rtc_int: rtc-int {
+			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
 
+	gpio-key {
+		button_restart_pin: button-restart-pin {
+			rockchip,pins = <1 RK_PC0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	gpio-leds {
+		sys_led_pin: sys-led-pin {
+			rockchip,pins =
+				<1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		wan_led_pin: wan-led-pin {
+			rockchip,pins =
+				<1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		lan_led_pin: lan-led-pin {
+			rockchip,pins =
+				<1 RK_PC3 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		user_led_pin: user-led-pin {
+			rockchip,pins =
+				<1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	usb {
+		vcc5v0_host_20_en: vcc5v0-host-20-en {
+			rockchip,pins = <4 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+};
