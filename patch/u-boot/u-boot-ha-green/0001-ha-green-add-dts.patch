@@ -1,26 +1,29 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: John Doe <john.doe@somewhere.on.planet>
-Date: Tue, 16 Jul 2024 08:57:59 +0000
+Date: Sun, 12 Oct 2025 10:52:12 +0800
 Subject: Patching u-boot rk35xx files arch/arm/dts/rk3566-ha-green-u-boot.dtsi
- arch/arm/dts/rk3566-ha-green.dts configs/ha-green-rk3566_defconfig
+ arch/arm/dts/rk3566-ha-green.dts board/rockchip/evb_rk3568/MAINTAINERS
+ configs/ha-green-rk3566_defconfig doc/board/rockchip/rockchip.rsthishis
 
 Signed-off-by: John Doe <john.doe@somewhere.on.planet>
 ---
  arch/arm/dts/rk3566-ha-green-u-boot.dtsi |   1 +
  arch/arm/dts/rk3566-ha-green.dts         | 359 ++++++++++
+ board/rockchip/evb_rk3568/MAINTAINERS    |   7 +
  configs/ha-green-rk3566_defconfig        | 105 +++
- 3 files changed, 465 insertions(+)
+ doc/board/rockchip/rockchip.rst          |   1 +
+ 5 files changed, 473 insertions(+)
 
 diff --git a/arch/arm/dts/rk3566-ha-green-u-boot.dtsi b/arch/arm/dts/rk3566-ha-green-u-boot.dtsi
 new file mode 100644
-index 0000000000..3f4fd31a46
+index 00000000000..3f4fd31a46b
 --- /dev/null
 +++ b/arch/arm/dts/rk3566-ha-green-u-boot.dtsi
 @@ -0,0 +1 @@
 +#include "rk356x-u-boot.dtsi"
 diff --git a/arch/arm/dts/rk3566-ha-green.dts b/arch/arm/dts/rk3566-ha-green.dts
 new file mode 100644
-index 0000000000..1e0904a7c4
+index 00000000000..80316b3b072
 --- /dev/null
 +++ b/arch/arm/dts/rk3566-ha-green.dts
 @@ -0,0 +1,359 @@
@@ -383,9 +386,26 @@ index 0000000000..1e0904a7c4
 +	bootph-some-ram;
 +	status = "okay";
 +};
+diff --git a/board/rockchip/evb_rk3568/MAINTAINERS b/board/rockchip/evb_rk3568/MAINTAINERS
+index 6cf568ad150..a7f5216bb3f 100644
+--- a/board/rockchip/evb_rk3568/MAINTAINERS
++++ b/board/rockchip/evb_rk3568/MAINTAINERS
+@@ -93,5 +93,12 @@ F:	configs/rock-3c-rk3566_defconfig
+ LCKFB-TaishanPi
+ M:	Jiehui He <jiehui.he@foxmail.com>
+ S:	Maintained
+ F:	configs/lckfb-tspi-rk3566_defconfig
+ F:	arch/arm/dts/rk3566-lckfb-tspi-u-boot.dtsi
++
++HA-GREEN
++M:      Smilx <liwei19920307@gmail.com>
++S:      Maintained
++F:      configs/ha-green-rk3566_defconfig
++F:      arch/arm/dts/rk3566-ha-green.dts
++F:	arch/arm/dts/rk3566-ha-green-u-boot.dtsi
 diff --git a/configs/ha-green-rk3566_defconfig b/configs/ha-green-rk3566_defconfig
 new file mode 100644
-index 0000000000..5c2fe28c78
+index 00000000000..5c2fe28c782
 --- /dev/null
 +++ b/configs/ha-green-rk3566_defconfig
 @@ -0,0 +1,105 @@
@@ -494,5 +514,22 @@ index 0000000000..5c2fe28c78
 +CONFIG_USB_GADGET_DOWNLOAD=y
 +CONFIG_USB_FUNCTION_ROCKUSB=y
 +CONFIG_ERRNO_STR=y
+diff --git a/doc/board/rockchip/rockchip.rst b/doc/board/rockchip/rockchip.rst
+index de3aa79cb5c..7806eae5a1e 100644
+--- a/doc/board/rockchip/rockchip.rst
++++ b/doc/board/rockchip/rockchip.rst
+@@ -117,10 +117,11 @@ List of mainline supported Rockchip boards:
+      - Powkiddy X55 (powkiddy-x55-rk3566)
+      - Radxa CM3 IO Board (radxa-cm3-io-rk3566)
+      - Radxa ROCK 3C (rock-3c-rk3566)
+      - Radxa ZERO 3W/3E (radxa-zero-3-rk3566)
+      - Xunlong Orange Pi 3B (orangepi-3b-rk3566)
++     - HA Green (ha-green-rk3566)
+ 
+ * rk3568
+      - Rockchip Evb-RK3568 (evb-rk3568)
+      - Banana Pi BPI-R2 Pro (bpi-r2-pro-rk3568)
+      - EmbedFire LubanCat 2 (lubancat-2-rk3568)
 -- 
 Created with Armbian build tools https://github.com/armbian/build
+
