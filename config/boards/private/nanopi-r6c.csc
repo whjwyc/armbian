@@ -1,7 +1,7 @@
 # NanoPi R6C
 BOARD_NAME="NanoPi R6C"
 BOARDFAMILY="rk35xx"
-BOOTCONFIG="generic-rk3588_defconfig"
+BOOTCONFIG="nanopi-r6c-rk3588s_defconfig"
 BOOT_SOC="rk3588"
 KERNEL_TARGET="vendor"
 BOARD_FIRMWARE_INSTALL="-full"
